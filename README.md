@@ -1,11 +1,11 @@
 <div align="center">
  <h1> Interective Polarity Score Plot </h1>
   <a href="https://arxiv.org/abs/2407.19498">
-    <img align="center" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS9PvkGku1cP-sph35SRBDyCwHEKLMZyBggCw&s" width="75" height="26"/>
+    <img align="center" src="https://img.shields.io/badge/arXiv-2407.19498-b31b1b?logo=arxiv&logoColor=white" alt="arXiv" height="26"/>
   </a>
  <!--   <a href="https://arxiv.org/abs/2407.19498"> (Preprint) </a> -->
   <a href="https://github.com/sahajps/FC-Bias">
-    <img align="center" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTFaHW69OfhzFN9xaGJf68IUddHqWSoE-dI5q_lOLElXvZ4jMKjXs0DAGTdzJS7Kid8vNU&usqp=CAU" width="90" height="26"/>
+    <img align="center" src="https://img.shields.io/badge/GitHub-FC--Bias-181717?logo=github&logoColor=white" alt="GitHub" height="26"/>
   </a>
   <!--   <a href="https://github.com/sahajps/FC-Bias"> (Data & Code) </a> -->
 </div>
@@ -19,62 +19,37 @@ In the paper, `Figure 2` shows the extent of neutrality (−1 ≤ P S ≤ 1) for
 
 In the paper, the Propensity Score (PS) is shown only for the top 5 entities and is presented year-wise. However, a reader might be more interested in examining the neutrality of fact-checking media during specific events (e.g., the farmers' protest in India). Researchers often face space constraints in papers, limiting the ability to present various permutations and combinations of figures. Therefore, I came up with the idea to create a tool that allows our readers to explore more.
 
+## Live Website
+The tool is hosted on GitHub Pages: https://sahajps.github.io/FC-Bias-Explorer/
+
+It is a static website (`docs/`): the Polarity Scores are computed and the plot is drawn in the browser, so no server is needed. The earlier Flask version of this tool is kept under the tag [v1](https://github.com/sahajps/FC-Bias-Explorer/tree/v1).
+
 ## Setup (For user)
 1. Clone the repository.
  ```sh
-   git clone https://github.com/sahajps/FC-PolarityScore
-   cd FC-PolarityScore
+   git clone https://github.com/sahajps/FC-Bias-Explorer
+   cd FC-Bias-Explorer
  ```
-   
-2. Install dependencies:
+2. Serve the `docs/` folder:
  ```sh
-   pip install -r requirements.txt
+   python3 -m http.server -d docs 8000
  ```
-3. To run the flask-web application:
- ```sh
-   python3 run.py
- ```
-4. Follow your local host link or put the following link in your web browser.
- ```sh
-   127.0.0.1:5000/
- ```
-## Maintenance (For developer)
-There are three subdir-level README files to detail the functionality of [app](https://github.com/sahajps/FC-PolarityScore/blob/main/app/README.md), [data](https://github.com/sahajps/FC-PolarityScore/blob/main/data/README.md), and [tests](https://github.com/sahajps/FC-PolarityScore/blob/main/tests/README.md).
-The high-level repo looks like the following:
+3. Open `127.0.0.1:8000/` in your web browser. (Opening `docs/index.html` directly as a file does not work as the browser blocks loading the data.)
 
-```plaintext
-FC-PolarityScore/
-├── app/
-│   ├── __init__.py         # Application factory and configuration
-│   ├── routes.py           # Define the routes/endpoints
-│   ├── utils/              # Ploting and returning plot data
-│   │   ├── plotter.py
-│   │   └── returnplot.py
-│   ├── templates/          # HTML templates
-│   │   ├── index.html
-│   │   └── about.html
-│   └── static/             # Static files (CSS, JS, images)
-│       ├── style.css
-│       └── script.js
-│
-├── data/
-│   ├── Topic Sentiment Data/
-│   │   └── *.json
-│   ├── Test Case(s)/
-│   │   └── *.json
-│   └── README.md            # Discription of .json data
-│
-├── tests/
-│   ├── test_routes.py       # Unit tests for routes
-│   ├── test_graph_data.py   # Tests for polarity score values
-│   └── README.md            # Details about tests
-│
-├── .gitignore               # Git ignore file
-├── config.py                # Secret key can be added (if any)
-├── README.md                # Project overview
-├── requirements.txt         # Python dependencies
-└── run.py                   # Entry point to Flask app
-```
+## Maintenance (For developer)
+#### Website (GitHub Pages)
+- `docs/` is the website served by GitHub Pages (Settings → Pages → Deploy from a branch → `main` and `/docs`), no build step is needed.
+- `docs/polarity.js` computes the Polarity Scores (a JavaScript port of `returnplot.py` from [v1](https://github.com/sahajps/FC-Bias-Explorer/tree/v1)); `docs/script.js` handles the inputs, the key events (dates, texts and photo slideshows) and the plot.
+- `docs/data/polarity_data.json` is generated from `data/Topic Sentiment Data/*.json`. Re-generate it whenever that data changes (needs `pandas`):
+ ```sh
+   pip install -r requirements.txt
+   python3 scripts/build_static_data.py
+ ```
+- Test the Polarity Scores against the cached results (needs Node.js 18+):
+ ```sh
+   node tests/test_static_site.js
+ ```
+- More details: [data](https://github.com/sahajps/FC-Bias-Explorer/blob/main/data/README.md), [tests](https://github.com/sahajps/FC-Bias-Explorer/blob/main/tests/README.md) and [photo credits](https://github.com/sahajps/FC-Bias-Explorer/blob/main/docs/img/photos/README.md).
 
 ## Cite
 If you find the website or data useful (this or root github for paper), do cite!! This must ring a bell. 🔔

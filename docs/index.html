@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FC Bias Explorer: Political neutrality of fact-checkers</title>
+    <meta name="description" content="Interactive Polarity Score plot of the political entities covered by six fact-checking organizations from the USA and India (2018-2023).">
+    <link rel="icon" href="img/lcs2_logo.png">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Merriweather:wght@700;900&display=swap">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-basic-2.35.2.min.js"></script>
+    <script src="polarity.js"></script>
+    <script src="script.js"></script>
+</head>
+<body data-theme="all" data-country="both">
+    <!-- The plot is computed and drawn in the browser by polarity.js and script.js -->
+
+    <!-- The header contains LCS2 logo, webapp's name, and the countries and years covered (or those of the selected key event) -->
+    <header class="site-header">
+        <div class="container header-inner">
+            <a class="brand" href="index.html">
+                <img src="img/lcs2_logo.png" alt="LCS2 Logo">
+                <span>FC Bias Explorer</span>
+            </a>
+            <p id="hero-eyebrow" class="header-meta">
+                <span class="nowrap"><img src="img/flag-us.svg" class="flag" alt=""> United States</span>
+                <span class="sep">&middot;</span>
+                <span class="nowrap"><img src="img/flag-in.svg" class="flag" alt=""> India</span>
+                <span class="sep">&middot;</span>
+                <span class="nowrap">2018 &ndash; 2023</span>
+            </p>
+        </div>
+    </header>
+    <div class="flag-stripe" aria-hidden="true"><span class="us"></span><span class="in"></span></div>
+
+    <!-- Hero: its colors, background photo, title and text change with the selected key event (see EVENTS in script.js) -->
+    <section class="hero">
+        <div id="hero-photo" class="hero-photo">
+            <div class="hero-slide active">
+                <img src="img/photos/us-capitol-dusk.jpg" alt="">
+                <img src="img/photos/in-parliament-dawn.jpg" alt="">
+            </div>
+        </div>
+        <div class="hero-overlay"></div>
+        <div class="container">
+            <div class="hero-text hero-swap">
+                <h1 id="hero-title">How politically neutral are <span class="nowrap">fact-checkers?</span></h1>
+                <p id="hero-lead" class="lead">Six independent fact-checkers, three in the US and three in India, often cover the same popular political figures and parties. Compare how each one portrays them, as critical, neutral or promoting, and how that image varies over time and around key events.</p>
+            </div>
+            <div class="hero-actions">
+                <a class="btn btn-light" href="https://arxiv.org/abs/2407.19498" target="_blank">Read the paper</a>
+                <a class="btn btn-outline-light" href="https://github.com/sahajps/FC-Bias" target="_blank">Data &amp; code</a>
+            </div>
+
+            <!-- Shortcuts that set the date range to a major political event (filled by script.js) -->
+            <div class="events">
+                <div class="events-label">Explore a key event</div>
+                <div id="event-chips" class="event-chips"></div>
+                <a class="see-plot" href="#plot-panel">See the plot &darr;</a>
+            </div>
+        </div>
+        <div id="hero-dots" class="hero-dots"></div>
+        <p id="hero-credit" class="hero-credit hero-swap"></p>
+    </section>
+
+    <main class="container main">
+        <!-- One card per country: its fact-checking organizations and the color scale used in the plot -->
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <div class="country-card us">
+                    <div class="country-title"><img src="img/flag-us.svg" class="flag" alt="">United States</div>
+                    <div class="org-chips"><span>Check Your Fact</span><span>PolitiFact</span><span>Snopes</span></div>
+                    <div class="scale us">
+                        <div class="scale-title">Bar color in the plot</div>
+                        <div class="scale-bar"></div>
+                        <div class="scale-labels"><span>&minus;1 Critical</span><span>0 Neutral</span><span>+1 Promoting</span></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div class="country-card in">
+                    <div class="country-title"><img src="img/flag-in.svg" class="flag" alt="">India</div>
+                    <div class="org-chips"><span>Alt News</span><span>Boom</span><span>OpIndia</span></div>
+                    <div class="scale in">
+                        <div class="scale-title">Bar color in the plot</div>
+                        <div class="scale-bar"></div>
+                        <div class="scale-labels"><span>&minus;1 Critical</span><span>0 Neutral</span><span>+1 Promoting</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- This input-form takes inputs for different conditions -->
+        <div class="panel">
+            <form id="input-form">
+                <div class="form-row">
+                    <!-- This div takes start date as input with condition the date should be in range of 2018-2023 -->
+                    <div class="form-group col-sm-6 col-lg-3">
+                        <label for="start-date-input">From</label>
+                        <input type="date" class="form-control" id="start-date-input" name="start-date-input" value="2018-01-01" required min="2018-01-01" max="2023-12-31">
+                    </div>
+
+                    <!-- This div takes end date as input with condition the date should be in range of 2018-2023 -->
+                    <div class="form-group col-sm-6 col-lg-3">
+                        <label for="end-date-input">To</label>
+                        <input type="date" class="form-control" id="end-date-input" name="end-date-input" value="2023-12-31" required min="2018-01-01" max="2023-12-31">
+                    </div>
+
+                    <!-- This div takes # of entities to be plotted for each organization -->
+                    <div class="form-group col-sm-6 col-lg-3">
+                        <label for="integer-input">No. of top entities</label>
+                        <select class="form-control" id="integer-input" name="integer-input" required>
+                            <option value="5" selected>5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                            <option value="9">9</option>
+                            <option value="10">10</option>
+                            <option value="11">11</option>
+                            <option value="12">12</option>
+                            <option value="13">13</option>
+                            <option value="14">14</option>
+                            <option value="15">15</option>
+                        </select>
+                    </div>
+
+                    <!-- This button provides two options to choose "Alphabetic" or "Frequency" to decide the order of political entities -->
+                    <div class="form-group col-sm-6 col-lg-3">
+                        <label for="order-input">Entities' order</label>
+                        <select class="form-control" id="order-input" name="order-input" required>
+                            <option value="Alphabetic" selected>Alphabetic</option>
+                            <option value="Frequency">Frequency</option>
+                        </select>
+                    </div>
+                </div>
+            </form>
+
+            <!-- To print dynamic error message if any (One could be st_date>en_date) -->
+            <div id="error-message" class="error-message"></div>
+        </div>
+
+        <!-- Plotly draws the interactive plot inside #plot, and the same values are listed in #plot-table -->
+        <div id="plot-panel" class="panel plot-panel">
+            <h2 id="plot-title" class="plot-title">Polarity Score of the top 5 most frequent political entities</h2>
+            <p id="plot-subtitle" class="plot-subtitle"></p>
+            <p class="plot-help">Polarity Score = (positive &minus; negative) &divide; all mentions of the entity. Bars to the left mean a critical tone, to the right a promoting tone and near 0 a neutral one; darker bars are stronger. Hover on a bar to see its counts.</p>
+            <div id="loading-message" class="loading-message">Loading data...</div>
+            <div id="plot"></div>
+            <details class="table-view">
+                <summary>View values as a table</summary>
+                <div id="plot-table" class="table-responsive"></div>
+            </details>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="flag-stripe" aria-hidden="true"><span class="us"></span><span class="in"></span></div>
+        <div class="container">
+            <p><a href="https://arxiv.org/abs/2407.19498" target="_blank">Singh, Masud and Chakraborty. Hidden bias in the pursuit of truth: A longitudinal analysis of political neutrality in fact-checking.</a></p>
+            <p class="footer-links">
+                <a href="https://github.com/sahajps/FC-Bias" target="_blank">Data &amp; code</a>
+                <span class="sep">&middot;</span>
+                <a href="https://github.com/sahajps/FC-Bias-Explorer" target="_blank">Website source</a>
+            </p>
+        </div>
+    </footer>
+</body>
+</html>

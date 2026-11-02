@@ -1,0 +1,602 @@
+/* Styles of the static (GitHub Pages) website */
+
+:root {
+    --navy: #0f1f3d;
+    --navy-2: #1c3366;
+    --ink: #1d2433;
+    --muted: #5b6475;
+    --border: #e3e7ee;
+    --page: #f4f6fa;
+    /* Flag colors */
+    --us-red: #b22234;
+    --us-blue: #3c3b6e;
+    --in-saffron: #ff9933;
+    --in-green: #138808;
+    /* Bar colors of the plot (same as Figure 2 of the paper) */
+    --us-positive: 0, 100, 0;
+    --us-negative: 181, 72, 128;
+    --in-positive: 0, 0, 255;
+    --in-negative: 255, 0, 0;
+}
+
+/* Hero colors per key event: data-theme is set on <body> by script.js */
+@property --hero-from { syntax: '<color>'; inherits: true; initial-value: #0f1f3d; }
+@property --hero-to { syntax: '<color>'; inherits: true; initial-value: #1c3366; }
+@property --glow-1 { syntax: '<color>'; inherits: true; initial-value: rgba(178, 34, 52, 0.22); }
+@property --glow-2 { syntax: '<color>'; inherits: true; initial-value: rgba(255, 153, 51, 0.16); }
+
+body {
+    --hero-from: #0f1f3d;
+    --hero-to: #1c3366;
+    --glow-1: rgba(178, 34, 52, 0.22); /* top left */
+    --glow-2: rgba(255, 153, 51, 0.16); /* top right */
+}
+/* Each country's flag colors are used together, never one of them alone */
+body[data-theme="us-congress"] {
+    --hero-from: #0d1a3a;
+    --hero-to: #22306a;
+    --glow-1: rgba(178, 34, 52, 0.32);
+    --glow-2: rgba(120, 150, 235, 0.26);
+}
+body[data-theme="us-presidential"] {
+    --hero-from: #10163a;
+    --hero-to: #2a2c6c;
+    --glow-1: rgba(178, 34, 52, 0.30);
+    --glow-2: rgba(150, 170, 255, 0.30);
+}
+body[data-theme="us-protest"] {
+    --hero-from: #15132a;
+    --hero-to: #2a1d40;
+    --glow-1: rgba(200, 30, 50, 0.32);
+    --glow-2: rgba(60, 110, 255, 0.30);
+}
+body[data-theme="in-election"] {
+    --hero-from: #0b1c3d;
+    --hero-to: #0e3a47;
+    --glow-1: rgba(255, 153, 51, 0.30);
+    --glow-2: rgba(19, 136, 8, 0.32);
+}
+body[data-theme="in-caa"] {
+    --hero-from: #1b1736;
+    --hero-to: #33285a;
+    --glow-1: rgba(255, 153, 51, 0.26);
+    --glow-2: rgba(19, 136, 8, 0.26);
+}
+body[data-theme="in-farmers"] {
+    --hero-from: #142519;
+    --hero-to: #2c4720;
+    --glow-1: rgba(234, 179, 8, 0.30);
+    --glow-2: rgba(255, 153, 51, 0.20);
+}
+
+body {
+    font-family: 'Inter', Arial, sans-serif;
+    color: var(--ink);
+    background-color: var(--page);
+    margin: 0;
+    padding: 0;
+}
+h1, h2, .brand span, .country-title {
+    font-family: 'Merriweather', Georgia, serif;
+}
+.nowrap {
+    white-space: nowrap;
+}
+.sep {
+    margin: 0 6px;
+    opacity: 0.6;
+}
+.flag {
+    height: 1em;
+    width: auto;
+    border-radius: 2px;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.15);
+    vertical-align: -0.1em;
+}
+
+/* Header */
+.site-header {
+    background-color: var(--navy);
+}
+.header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+.header-meta {
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.8);
+    margin: 0;
+    transition: opacity 0.25s ease;
+}
+.header-meta .flag {
+    margin-right: 4px;
+}
+.brand {
+    display: flex;
+    align-items: center;
+    color: #fff;
+    font-size: 18px;
+    font-weight: 700;
+}
+.brand:hover {
+    color: #fff;
+    text-decoration: none;
+}
+.brand img {
+    height: 40px;
+    width: auto;
+    margin-right: 12px;
+    padding: 3px 6px;
+    border-radius: 6px;
+    background-color: #fff; /* The logo is black on transparent */
+}
+
+/* Thin stripe in the colors of both flags: USA on the left, India on the right */
+.flag-stripe {
+    display: flex;
+    height: 6px;
+}
+.flag-stripe span {
+    flex: 1;
+}
+.flag-stripe .us,
+.country-card.us::before {
+    background: linear-gradient(to bottom, var(--us-red) 0 33.4%, #fff 33.4% 66.6%, var(--us-blue) 66.6%);
+}
+.flag-stripe .in,
+.country-card.in::before {
+    background: linear-gradient(to bottom, var(--in-saffron) 0 33.4%, #fff 33.4% 66.6%, var(--in-green) 66.6%);
+}
+
+/* Hero */
+.hero {
+    position: relative;
+    overflow: hidden;
+    color: #fff;
+    text-align: center;
+    padding: 52px 0 60px;
+    background-color: var(--hero-from);
+}
+.hero > .container {
+    position: relative;
+    z-index: 2;
+}
+/* Real photo of the event in the background (greyscale), with the theme colors on top */
+.hero-photo {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+}
+/* Slideshow: each slide has one photo, or two side by side, and crossfades in */
+.hero-slide {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    opacity: 0;
+    transition: opacity 1.2s ease;
+}
+.hero-slide.active {
+    opacity: 1;
+}
+.hero-slide img {
+    flex: 1;
+    min-width: 0;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(0.3) contrast(1.05);
+}
+@media (prefers-reduced-motion: no-preference) {
+    .hero-slide.active img {
+        animation: hero-zoom 9s ease-out both; /* Slow zoom while a photo is shown */
+    }
+}
+@keyframes hero-zoom {
+    from { transform: scale(1); }
+    to { transform: scale(1.06); }
+}
+.hero-dots {
+    position: absolute;
+    left: 50%;
+    bottom: 4px;
+    transform: translateX(-50%);
+    z-index: 2;
+    display: flex;
+    gap: 4px;
+}
+.hero-dots button {
+    width: 40px;
+    height: 24px;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+}
+.hero-dots button::before {
+    content: '';
+    display: block;
+    width: 28px;
+    height: 4px;
+    margin: auto;
+    border-radius: 2px;
+    background-color: rgba(255, 255, 255, 0.45);
+    transition: width 0.3s ease, background-color 0.3s ease;
+}
+.hero-dots button.active::before {
+    width: 40px;
+    background-color: #fff;
+}
+.hero-dots button:focus {
+    outline: none;
+}
+.hero-dots button:focus-visible {
+    outline: 2px solid #fff;
+}
+.hero-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background:
+        radial-gradient(ellipse at 0% 0%, var(--glow-1), transparent 50%),
+        radial-gradient(ellipse at 100% 0%, var(--glow-2), transparent 50%),
+        radial-gradient(ellipse 55% 60% at 50% 42%, rgba(0, 0, 0, 0.38), transparent 75%), /* Keeps the text readable */
+        linear-gradient(160deg, color-mix(in srgb, var(--hero-from) 60%, transparent) 0%, color-mix(in srgb, var(--hero-to) 42%, transparent) 100%);
+    transition: --hero-from 0.6s ease, --hero-to 0.6s ease, --glow-1 0.6s ease, --glow-2 0.6s ease;
+}
+/* Photo caption and credit on the right, in the same row as the slideshow dashes */
+.hero-credit {
+    position: absolute;
+    right: 16px;
+    bottom: 10px;
+    max-width: calc(50% - 110px);
+    text-align: right;
+    line-height: 1.3;
+    z-index: 2;
+    margin: 0;
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.6);
+}
+.hero-credit a {
+    color: rgba(255, 255, 255, 0.8);
+}
+.hero-caption {
+    color: #fff;
+    font-weight: 600;
+}
+.hero-swap {
+    transition: opacity 0.25s ease;
+}
+.hero-swap.fading,
+.header-meta.fading {
+    opacity: 0;
+}
+.hero-text {
+    min-height: 196px; /* Keeps the buttons in place when the text of a key event is shorter */
+}
+.hero h1 {
+    font-size: 2.6rem;
+    font-weight: 900;
+    line-height: 1.25;
+    max-width: 780px;
+    margin: 0 auto 16px;
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
+}
+.hero .lead {
+    color: rgba(255, 255, 255, 0.9);
+    text-shadow: 0 1px 8px rgba(0, 0, 0, 0.4);
+    font-size: 1.1rem;
+    max-width: 720px;
+    margin: 0 auto 28px;
+}
+.hero-actions .btn {
+    margin: 4px 6px;
+    padding: 8px 20px;
+    border-radius: 999px;
+    font-weight: 600;
+}
+.hero-actions .btn-light {
+    color: var(--navy);
+}
+
+/* Key events in the hero */
+.events {
+    margin-top: 28px;
+}
+@media (min-width: 1200px) {
+    .events {
+        margin-left: -60px; /* Room for all the key events in one row */
+        margin-right: -60px;
+    }
+}
+.events-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: rgba(255, 255, 255, 0.75);
+    margin-bottom: 10px;
+}
+.event-chips {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+}
+.event-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background-color: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 999px;
+    padding: 5px 11px;
+    font-size: 0.84rem;
+    font-weight: 500;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+.event-chip:hover {
+    background-color: rgba(255, 255, 255, 0.18);
+}
+.event-chip:focus {
+    outline: none; /* Bootstrap draws a focus ring on clicked buttons */
+}
+.event-chip:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+}
+.event-chip.active {
+    background-color: #fff;
+    border-color: #fff;
+    color: var(--navy);
+}
+.see-plot {
+    display: inline-block;
+    margin-top: 14px;
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+.see-plot:hover {
+    color: #fff;
+}
+
+/* Cards */
+.main {
+    margin-top: 32px;
+}
+.panel,
+.country-card {
+    background-color: #fff;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: 0 1px 2px rgba(15, 31, 61, 0.04), 0 4px 16px rgba(15, 31, 61, 0.06);
+}
+.panel {
+    padding: 24px;
+    margin-bottom: 24px;
+}
+.country-card {
+    position: relative;
+    overflow: hidden;
+    height: 100%;
+    padding: 26px 24px 20px;
+}
+.country-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+}
+.country-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+.country-title .flag {
+    height: 22px;
+    margin-right: 10px;
+    vertical-align: -4px;
+}
+.org-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 18px;
+}
+.org-chips span {
+    background-color: var(--page);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 4px 12px;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+.scale-title {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    margin-bottom: 6px;
+}
+/* Same encoding as the plot: color by sign, opacity = |Polarity Score| */
+.scale-bar {
+    height: 12px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+}
+.scale.us .scale-bar {
+    background: linear-gradient(to right, rgb(var(--us-negative)), rgba(var(--us-negative), 0) 50%, rgba(var(--us-positive), 0) 50%, rgb(var(--us-positive)));
+}
+.scale.in .scale-bar {
+    background: linear-gradient(to right, rgb(var(--in-negative)), rgba(var(--in-negative), 0) 50%, rgba(var(--in-positive), 0) 50%, rgb(var(--in-positive)));
+}
+.scale-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-top: 4px;
+}
+
+/* Inputs */
+#input-form label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--muted);
+}
+#input-form .form-control {
+    border-radius: 8px;
+    border-color: #d5dae3;
+}
+.error-message {
+    color: #c0392b;
+}
+.error-message:empty {
+    display: none;
+}
+
+/* Plot */
+.plot-panel {
+    position: relative;
+    overflow: hidden;
+    padding-top: 30px;
+}
+.plot-panel::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background:
+        linear-gradient(to bottom, var(--us-red) 0 33.4%, #fff 33.4% 66.6%, var(--us-blue) 66.6%) left / 50% 100% no-repeat,
+        linear-gradient(to bottom, var(--in-saffron) 0 33.4%, #fff 33.4% 66.6%, var(--in-green) 66.6%) right / 50% 100% no-repeat;
+}
+body[data-country="USA"] .plot-panel::before {
+    background: linear-gradient(to bottom, var(--us-red) 0 33.4%, #fff 33.4% 66.6%, var(--us-blue) 66.6%);
+}
+body[data-country="India"] .plot-panel::before {
+    background: linear-gradient(to bottom, var(--in-saffron) 0 33.4%, #fff 33.4% 66.6%, var(--in-green) 66.6%);
+}
+.plot-title {
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+.plot-subtitle {
+    color: var(--muted);
+    font-weight: 500;
+    margin-bottom: 8px;
+}
+.plot-help {
+    color: var(--muted);
+    font-size: 0.875rem;
+    margin-bottom: 8px;
+}
+.loading-message {
+    text-align: center;
+    color: var(--muted);
+    margin: 40px 0;
+}
+#plot {
+    width: 100%;
+}
+
+/* Table view of the plot values */
+.table-view {
+    border-top: 1px solid var(--border);
+    padding-top: 12px;
+    margin-top: 8px;
+}
+.table-view summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--navy-2);
+}
+.table-view table {
+    width: 100%;
+    margin-top: 12px;
+    font-size: 0.875rem;
+    border-collapse: collapse;
+}
+.table-view th,
+.table-view td {
+    padding: 6px 10px;
+    border-bottom: 1px solid var(--border);
+}
+.table-view th {
+    color: var(--muted);
+    font-weight: 600;
+}
+.table-view .num {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+.table-view .org-row td {
+    background-color: var(--page);
+    font-weight: 700;
+}
+.table-view .org-row .flag {
+    margin-right: 8px;
+}
+
+/* Footer */
+.site-footer {
+    background-color: var(--navy);
+    color: rgba(255, 255, 255, 0.75);
+    font-size: 0.9rem;
+    margin-top: 16px;
+}
+.site-footer .container {
+    text-align: center;
+    padding-top: 24px;
+    padding-bottom: 12px;
+}
+.site-footer a {
+    color: #fff;
+}
+
+/* Narrower screens: no room in one row, so the dashes go above the credit */
+@media (max-width: 991px) {
+    .hero {
+        padding-bottom: 76px;
+    }
+    .hero-dots {
+        bottom: 30px;
+    }
+    .hero-credit {
+        left: 16px;
+        max-width: none;
+        text-align: center;
+    }
+}
+
+@media (max-width: 575px) {
+    .hero {
+        padding-top: 32px;
+    }
+    .hero-credit {
+        font-size: 0.65rem;
+    }
+    .header-meta {
+        display: none; /* No room next to the name; the plot subtitle shows the dates */
+    }
+    .hero-text {
+        min-height: 0;
+    }
+    .hero h1 {
+        font-size: 1.9rem;
+    }
+    .panel {
+        padding: 16px;
+    }
+}

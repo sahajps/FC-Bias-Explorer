@@ -1,11 +1,5 @@
-## App Testing
-Two major tests have been done. One can run these test cases using the following commands:
-
-1. 
+## Website Testing
+The Polarity Scores computed by the website (`docs/polarity.js`) are compared with the cached results in `data/Test Case(s)/` (all dates, top 5 entities, frequency-based order). Run it from the repository root, it needs Node.js 18+:
  ```sh
-    python3 -m unittest discover -s tests -p "test_routes.py"
- ```
-2. 
- ```sh
-    python3 -m unittest discover -s tests -p "test_graph_data.py"
+    node tests/test_static_site.js
  ```
